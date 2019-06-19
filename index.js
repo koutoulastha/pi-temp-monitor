@@ -13,17 +13,22 @@ admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
 //console.log("admin.init");
-
+admin
 var db = admin.firestore();
-const settings = {/* your settings... */ timestampsInSnapshots: true};
+const settings = {/* your settings... */ timestampsInSnapshots: true,
+    persistenceEnabled :true};
 db.settings(settings);
+
+
 
 var docRef = db.collection('CpuTemps');
 
 console.log("Starting job");
 //cron.schedule('0 0,30 * * * *', () => {
 
-cron.schedule('* * * * *', WriteCpuTemp() );
+cron.schedule('* * * * *', () => {
+    WriteCpuTemp();
+});
 
 console.log('Firebase test running');
 
@@ -33,5 +38,7 @@ function WriteCpuTemp() {
         Temperature: Math.floor((Math.random() * 10) + 1)
     }).then(ref => {
         console.log("Added document with ID: " + ref.id);
+    }).catch(err => {
+        console.log("Error: " + err);
     });
 }
