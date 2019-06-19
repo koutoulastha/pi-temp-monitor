@@ -4,7 +4,6 @@ const cron = require('node-cron');
 
 //console.log("admin");
 
-const firestore = admin.firestore;
 //console.log("firestore");
 
 var serviceAccount = require('./pimonitor-e2571-dee61a31982d.json');
@@ -16,13 +15,15 @@ admin.initializeApp({
 //console.log("admin.init");
 
 var db = admin.firestore();
+const settings = {/* your settings... */ timestampsInSnapshots: true};
+db.settings(settings);
 
 var docRef = db.collection('CpuTemps');
 
 console.log("Starting job");
-cron.schedule('0 0,30 * * * *', () => {
-	WriteCpuTemp();
-});
+//cron.schedule('0 0,30 * * * *', () => {
+
+cron.schedule('* * * * *', WriteCpuTemp() );
 
 console.log('Firebase test running');
 
@@ -33,5 +34,4 @@ function WriteCpuTemp() {
     }).then(ref => {
         console.log("Added document with ID: " + ref.id);
     });
-
 }
